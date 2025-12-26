@@ -1,0 +1,11 @@
+stages:
+  setup_data:
+    cmd: python setup_data.py
+    deps:
+      - setup_data.py
+    outs:
+      - data/train_split.json
+      - data/validation_split.json
+      - data/test_split.json
+      - data/dataset_summary.json:
+          cache: false

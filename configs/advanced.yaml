@@ -1,0 +1,47 @@
+# Advanced (main) model training configuration
+# ViT-tiny (vision encoder) + Transformer decoder-only style
+# Command: python -m video_captioning.commands train_advanced
+
+defaults:
+  - dataset/msr_vtt
+  - model/advanced
+  - training/trainer
+  - override hydra/job_logging: none
+  - override hydra/hydra_logging: none
+  - _self_
+
+# Dataset defaults are in configs/dataset/msr_vtt.yaml
+# Keep only overrides here.
+dataset:
+  tokenizer:
+    model_dir: artifacts/tokenizers
+
+# Inference/Generation configuration
+generation:
+  max_length: 100
+  temperature: 1.0
+
+  beam_search_settings:
+    beam_size: 5
+    length_penalty: 1.2
+
+  topk_settings:
+    k: 30
+
+# Validation-time generation/metrics
+validation:
+  compute_metrics: true
+  max_samples: 1024
+  generation_mode: topk  # greedy | beam | topk
+  generate_captions: true
+  compute_bleu_4: true
+  compute_meteor: true
+
+logging:
+  level: INFO
+  output_dir: artifacts
+  use_mlflow: true
+  mlflow_uri: http://127.0.0.1:8080
+  experiment_name: advanced
+  tracking_uri: http://127.0.0.1:8080
+  log_every_n_steps: 10

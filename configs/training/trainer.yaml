@@ -1,0 +1,20 @@
+max_epochs: 200
+learning_rate: 0.001
+optimizer: adam
+weight_decay: 1e-5
+warmup_steps: 1000
+scheduler: cosine
+
+# Reproducibility
+seed: 42
+
+accelerator: gpu  # auto, gpu, cpu
+devices: 2
+precision: 16-mixed
+val_check_interval: 1.0
+strategy: auto
+gradient_clip_val: 1.0
+early_stopping_patience: 20
+
+# Disable sanity validation by default (can be slow with video decoding)
+num_sanity_val_steps: 0

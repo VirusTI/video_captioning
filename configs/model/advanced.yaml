@@ -1,0 +1,29 @@
+name: advanced
+model_type: advanced
+
+# Vision encoder (ViT-tiny from timm)
+vision_encoder:
+  name: vit_tiny
+  pretrained: true
+  freeze: true
+  output_dim: 192  # ViT-tiny patch16 embedding dimension
+
+# Model dimension and layers
+embedding:
+  d_model: 768
+  dropout: 0.1
+
+# Transformer decoder configuration
+transformer:
+  num_layers: 6
+  num_heads: 8
+  ffn_dim: 2048
+  dropout: 0.1
+  max_seq_len: 512
+
+# For Advanced: Transformer processes
+# [<VIDEO_START>, frame_emb_1, ..., frame_emb_T, <VIDEO_END>, text_tokens]
+# All embeddings have dimension d_model = 768
+# Frames are projected from 192 → 768
+# Special tokens: <VIDEO_START>, <VIDEO_END>
+# All numeric values in this config must be passed to model creation

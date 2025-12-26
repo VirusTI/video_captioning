@@ -1,0 +1,26 @@
+schema: '2.0'
+stages:
+  setup_data:
+    cmd: python setup_data.py
+    deps:
+    - path: setup_data.py
+      hash: md5
+      md5: 473beaddd4a67ef51f17537527e1b152
+      size: 10801
+    outs:
+    - path: data/dataset_summary.json
+      hash: md5
+      md5: ea60219ae2d9367a73eaf48721e23f84
+      size: 275
+    - path: data/test_split.json
+      hash: md5
+      md5: cf5cd9ea7f14890fc02c21ea6cf5f7bb
+      size: 274225
+    - path: data/train_split.json
+      hash: md5
+      md5: b066338a0f1b834012c50589e03a25f8
+      size: 11412832
+    - path: data/validation_split.json
+      hash: md5
+      md5: 0e68954ce49782b0273c6fe8dcc07122
+      size: 1433051

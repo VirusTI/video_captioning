@@ -1,0 +1,89 @@
+name: msr_vtt
+source: friedrichor/MSR-VTT
+
+split_ratio:
+  train: 0.8
+  val: 0.1
+  test: 0.1
+
+paths:
+  json_dir: data
+  train_metadata: data/train_split.json
+  val_metadata: data/validation_split.json
+  test_metadata: data/test_split.json
+  videos_dir: data/videos/video
+
+dataloader:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: true
+  # When num_workers > 0, Lightning recommends enabling this for faster worker reuse
+  # between epochs. Note: does NOT speed up the *first* worker spawn, and can leave
+  # orphan workers after Ctrl-C in some setups.
+  persistent_workers: true
+  # Only used when num_workers > 0
+  prefetch_factor: 2
+  # "spawn" is safer with OpenCV but slower to start; on Linux, "fork" can be faster.
+  multiprocessing_context: spawn
+  # Dataset-side frame cache (persists across epochs when persistent_workers=true).
+  # Helps when the same videos are visited again each epoch (train/val/test).
+  cache_frames: true
+  # Cache policy: "lru" (bounded by cache_max_items) or "all" (no eviction).
+  # NOTE: in DDP, caches live per worker *process* and are duplicated across ranks.
+  cache_policy: lru
+  # Upper bound per worker process. Baseline frames are ~0.6MB each (float32 3x224x224).
+  cache_max_items: 512
+
+  # Optional disk cache for decoded sampled frames (advanced dataset).
+  # This avoids duplicating RAM caches across ranks/workers in DDP because data
+  # is shared via the OS page cache. First epoch populates the cache; later epochs
+  # should be faster.
+  # Example: data/frame_cache/msr_vtt
+  disk_cache_dir: data/frame_cache/msr_vtt
+  # Use numpy mmap to reduce RAM duplication on load.
+  disk_cache_mmap: true
+  max_caption_length: 100
+
+# Image and Video Processing
+image:
+  size: 224  # Input image size (224x224)
+
+# Image normalization (ImageNet statistics)
+normalization:
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+
+# BPE Tokenization (SentencePiece)
+tokenizer:
+  type: bpe
+  vocab_size: 8000  # BPE vocabulary size
+  model_dir: models  # Where to save/load SentencePiece model
+
+# Baseline mode: 1 frame per video
+# Returns: (frame: (3, 224, 224), tokens, text, all_captions)
+baseline:
+  dataset_type: baseline
+  augment: false
+
+# Advanced mode: FPS-based variable frames
+# Returns: (frames: (T, 3, 224, 224), tokens, text, all_captions, num_frames)
+# where T varies per video based on target_fps
+advanced:
+  dataset_type: advanced
+  target_fps: 2.0  # Extract 2 frames per second
+  augment: true
+  # Albumentations pipeline parameters
+  augmentation:
+    color_jitter:
+      brightness: 0.2
+      contrast: 0.2
+      saturation: 0.2
+      hue: 0.1
+      prob: 0.5
+    horizontal_flip:
+      prob: 0.3
+    gaussian_blur:
+      blur_limit: 5
+      prob: 0.2
+    brightness_contrast:
+      prob: 0.2

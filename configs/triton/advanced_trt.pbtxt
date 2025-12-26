@@ -1,0 +1,29 @@
+name: "advanced"
+platform: "tensorrt_plan"
+max_batch_size: 0
+
+input [
+  {
+    name: "frames"
+    data_type: TYPE_FP32
+    dims: [ 1, 16, 3, 224, 224 ]
+  },
+  {
+    name: "tokens"
+    data_type: TYPE_INT64
+    dims: [ 1, 16 ]
+  },
+  {
+    name: "frame_mask"
+    data_type: TYPE_INT64
+    dims: [ 1, 16 ]
+  }
+]
+
+output [
+  {
+    name: "logits"
+    data_type: TYPE_FP32
+    dims: [ 1, 16, 8000 ]
+  }
+]

@@ -1,0 +1,46 @@
+repos:
+  # Basic hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=10240"]
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+
+  # Python formatting
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        language_version: python3
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  # Python lint
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+
+  # Prettier for non-Python files (md/yaml/json/etc)
+  # Use a local/system hook to avoid npm installs during pre-commit (offline-safe).
+  # If `prettier` is not installed, the hook is skipped.
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (system)
+        language: system
+        entry: bash -c 'command -v prettier >/dev/null 2>&1 && prettier --write "$@" || (echo "prettier not installed; skipping" >&2; exit 0)' --
+        files: '\.(md|yml|yaml|json|css|scss|html)$'
+        exclude: '^(htmlcov/|outputs/|data/|\.venv/|mlruns/|plots/__tmp__/)$'

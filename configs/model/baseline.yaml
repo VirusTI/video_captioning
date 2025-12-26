@@ -1,0 +1,22 @@
+name: baseline
+model_type: baseline
+
+# Vision encoder (ResNet-50)
+vision_encoder:
+  model: resnet50
+  pretrained: true
+  freeze: true  # Keep weights frozen during training
+
+# Model dimension and layers
+embedding:
+  d_model: 768  # Embedding dimension for text and projected frames
+  dropout: 0.1
+
+lstm:
+  num_layers: 2
+  dropout: 0.1
+
+# For Baseline: LSTM concatenates [frame_emb (d_model) | text_emb (d_model)]
+# Input dimension: 2 * d_model = 1536
+# Hidden dimension: d_model = 768
+# All numeric values in this config (768, 2, 0.1, 2048) must be passed to model creation

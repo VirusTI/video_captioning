@@ -1,0 +1,9 @@
+# Large/derived directories
+.venv/
+htmlcov/
+outputs/
+mlruns/
+data/
+
+# Generated artifacts under plots (keep committed ones, but don't reformat binaries)
+plots/**/plots/*.png
