@@ -22,7 +22,6 @@ Notes:
 from __future__ import annotations
 
 import json
-import sys
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -225,7 +224,12 @@ def main(
 
     logits = next(o for o in outputs if o.name == "logits").data
     finite = np.isfinite(logits).all()
-    print(f"server=ready model=ready model={model_name} logits.shape={tuple(logits.shape)} dtype={logits.dtype}")
+    print(
+        "server=ready model=ready "
+        f"model={model_name} "
+        f"logits.shape={tuple(logits.shape)} "
+        f"dtype={logits.dtype}"
+    )
     print(
         "logits stats:",
         f"min={np.nanmin(logits):.6g}",

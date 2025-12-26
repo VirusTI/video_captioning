@@ -24,9 +24,9 @@ from hydra import compose, initialize_config_dir
 from omegaconf import DictConfig, OmegaConf
 from torch import nn
 
-from video_captioning.training.train_baseline import create_model_and_encoder
-from video_captioning.training.train_advanced import _create_model_and_encoder
 from video_captioning.data.dataset import BPETokenizer
+from video_captioning.training.train_advanced import _create_model_and_encoder
+from video_captioning.training.train_baseline import create_model_and_encoder
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,8 @@ class AdvancedOnnxModule(nn.Module):
             # Keep export graph stable: require the exported T.
             # (No exception in ONNX runtime, but in eager this is helpful.)
             raise ValueError(
-                f"Expected frames with T={self.num_frames}, got T={int(T)}. Re-export with max_frames=T."
+                f"Expected frames with T={self.num_frames}, got T={int(T)}. "
+                "Re-export with max_frames=T."
             )
 
         frame_embeddings = self.vision_encoder(frames)  # (B, T, vision_dim)
@@ -206,7 +207,9 @@ def _load_baseline_weights(
             if missing:
                 logger.warning("Missing keys loading vision weights: %s", missing)
         else:
-            logger.info("No vision_encoder.* weights found in checkpoint; using default encoder weights")
+            logger.info(
+                "No vision_encoder.* weights found in checkpoint; using default encoder weights"
+            )
 
         return
 
@@ -244,7 +247,9 @@ def _load_advanced_weights(
         if vision_state:
             vision_encoder.load_state_dict(vision_state, strict=False)
         else:
-            logger.info("No vision_encoder.* weights found in checkpoint; using default encoder weights")
+            logger.info(
+                "No vision_encoder.* weights found in checkpoint; using default encoder weights"
+            )
 
         return
 
@@ -381,7 +386,8 @@ def export_advanced_to_onnx(
     if not tokenizer_model_path.exists():
         raise FileNotFoundError(
             f"Tokenizer model not found at {tokenizer_model_path}. "
-            "Run training/setup to create it, or point dataset.tokenizer.model_dir to an existing model."
+            "Run training/setup to create it, or point dataset.tokenizer.model_dir to an existing "
+            "model."
         )
     tokenizer.load(str(tokenizer_model_path))
     special = tokenizer.get_special_tokens()
