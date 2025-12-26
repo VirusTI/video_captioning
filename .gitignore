@@ -138,6 +138,8 @@ dmypy.json
 # Project-specific
 data/
 models/
+!video_captioning/models
+!video_captioning/data
 plots/
 artifacts/
 outputs/

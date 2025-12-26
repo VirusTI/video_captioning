@@ -81,7 +81,7 @@ uv run pre-commit run -a
 Данные скачиваются из открытого источника (HuggingFace). DVC используется как воспроизводимый пайплайн и для фиксации контрольных сумм выходных артефактов (см. `dvc.lock`).
 
 ```bash
-uv run dvc repro setup_data
+HF_HUB_DISABLE_XET=1 uv run dvc repro setup_data
 ```
 
 Что делает `setup_data.py`:
